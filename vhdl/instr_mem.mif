@@ -1,0 +1,26 @@
+DEPTH = 256;
+WIDTH = 32;
+
+ADDRESS_RADIX = HEX;
+DATA_RADIX = HEX;
+
+CONTENT
+BEGIN
+
+-- Use no operations (nop) for default instructions
+[00..FF]: 00000000; -- nop(add $t1, $t1, $t1)
+-- Place MIPS instruction here
+00: 8C020000; --lw $2,1 memory(00)
+04: 8C030001; --lw $3,0 memory(01)
+08: 00430806; --sub $1, $2, $3 ($t1 = $t2 - $t3 = 01100110 - 10101010 = AB (OF!)) 
+0C: 00230801; --or $4, $1, $3 ($t4 = AB or AA = AB)
+10: AC040001; --sw $4, 3 (memory(3) = $t4 = AB
+14: 00430802; --add $1, $2, $3 ($t1 = $t2 + $t3 = FF (-1))
+18: AC010004; --sw $1, 4 (memory(4) = $t1 = FF
+1C: 8C020003; --lw $2, 3 ($t2 = memory(3) = AB)
+20: 8C030004; --lw $3, 4 ($t3 = memory(4) = FF)
+24: 0800000B; --j 11 (jump to address 44 which is 2C in hex)
+28: 1021FFD4; --beq $1, $1, -44 (loop back to the beginning of the program)
+2C: 1022FFF8; --beq $1, $2, -8 (test if $t1 = $t2)
+END;
+
